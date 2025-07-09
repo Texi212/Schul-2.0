@@ -44,86 +44,181 @@
       color: var(--text);
       min-height: 100vh;
       transition: var(--transition);
-    }
-
-    .container {
       display: flex;
-      min-height: 100vh;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    /* Sidebar */
-    .sidebar {
-      width: 240px;
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      padding: 1.5rem;
-      border-right: 1px solid rgba(0, 0, 0, 0.1);
-      box-shadow: var(--shadow);
-      z-index: 10;
-      transition: var(--transition);
-    }
-
-    .sidebar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
+    /* Header */
+    .header {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
     }
 
     .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 2rem;
+      font-weight: 800;
       color: var(--primary);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      line-height: 1;
     }
 
+    .credit {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      color: var(--text);
+      font-weight: 500;
+      margin-top: 0.25rem;
+    }
+
+    /* Theme Toggle */
     .theme-toggle {
-      background: none;
+      background: var(--card-bg);
       border: none;
       color: var(--text);
-      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
+      box-shadow: var(--shadow);
       transition: var(--transition);
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
     }
 
     .theme-toggle:hover {
       transform: rotate(30deg);
     }
 
-    .nav-links {
+    /* Main Content */
+    .main-content {
+      flex: 1;
       display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
     }
 
-    .nav-link {
+    /* Auffälliger Hintergrund */
+    .bg-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(67, 97, 238, 0.08) 0%, transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(72, 149, 239, 0.08) 0%, transparent 30%),
+        linear-gradient(135deg, rgba(67, 97, 238, 0.05) 0%, rgba(63, 55, 201, 0.05) 100%);
+      background-color: var(--light);
+    }
+
+    .bg-shapes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.2;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0);
+      }
+      25% {
+        transform: translate(10%, 15%);
+      }
+      50% {
+        transform: translate(-5%, 20%);
+      }
+      75% {
+        transform: translate(15%, -10%);
+      }
+    }
+
+    /* Deutlich besser lesbarer Text */
+    .hero-container {
+      background: var(--card-bg);
+      padding: 2rem 3rem;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0,0,0,0.05);
+      max-width: 90%;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin: 0;
+      color: var(--primary);
+      line-height: 1.2;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* Bottom Left Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .nav-button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      background: var(--card-bg);
+      color: var(--primary);
+      border: 2px solid var(--primary);
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
-      color: var(--text);
-      text-decoration: none;
+      gap: 0.5rem;
       transition: var(--transition);
-      font-weight: 500;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(5px);
     }
 
-    .nav-link:hover, .nav-link.active {
+    .nav-button:hover {
       background: var(--primary);
       color: white;
-      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
     }
 
-    .nav-link i {
-      font-size: 1.1rem;
-    }
-
+    /* School Links */
     .school-links {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      gap: 10px;
+      z-index: 100;
     }
 
     .school-link {
@@ -136,11 +231,12 @@
       font-weight: 500;
       transition: var(--transition);
       color: white;
+      box-shadow: var(--shadow);
     }
 
     .school-link:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
 
     .lernsax-link {
@@ -155,194 +251,114 @@
       background-color: var(--beste-schule);
     }
 
-    /* Main Content */
-    .main-content {
-      flex: 1;
-      padding: 2rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(-45deg, #4361ee, #3f37c9, #4895ef, #4cc9f0);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
-      transition: var(--transition);
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Hero Section */
-    .hero {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border-radius: 24px;
-      padding: 3rem;
-      text-align: center;
-      max-width: 800px;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      border: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .hero-title {
-      font-size: 3.5rem;
-      font-weight: 800;
-      margin-bottom: 1.5rem;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-subtitle {
-      font-size: 1.25rem;
-      opacity: 0.9;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
-
-    .cta-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .cta-button {
-      padding: 1rem 2rem;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .cta-primary {
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
-    }
-
-    .cta-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 16px rgba(67, 97, 238, 0.4);
-    }
-
-    .cta-secondary {
-      background: var(--card-bg);
-      color: var(--primary);
-      border: 2px solid var(--primary);
-    }
-
-    .cta-secondary:hover {
-      background: rgba(67, 97, 238, 0.1);
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
+      .hero-container {
+        padding: 1.5rem;
       }
-
-      .sidebar {
-        width: 100%;
-        padding: 1rem;
-      }
-
-      .nav-links {
-        flex-direction: row;
-        overflow-x: auto;
-        padding-bottom: 0.5rem;
-      }
-
-      .nav-link {
-        white-space: nowrap;
-      }
-
-      .hero {
-        padding: 2rem 1.5rem;
-      }
-
+      
       .hero-title {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
       }
 
-      .hero-subtitle {
-        font-size: 1.1rem;
+      .header {
+        top: 15px;
+        left: 15px;
       }
 
-      .cta-buttons {
-        flex-direction: column;
+      .logo {
+        font-size: 1.5rem;
+      }
+
+      .credit {
+        font-size: 0.8rem;
+      }
+
+      .bottom-nav, .school-links {
+        flex-direction: row;
+        width: calc(100% - 30px);
+        justify-content: center;
+      }
+
+      .bottom-nav {
+        bottom: 70px;
+        left: 15px;
+      }
+
+      .school-links {
+        bottom: 15px;
+        right: 15px;
+      }
+
+      .nav-button, .school-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+
+      .theme-toggle {
+        top: 15px;
+        right: 15px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">Schule 2.0</div>
-        <button class="theme-toggle" id="themeToggle">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
-      <nav class="nav-links">
-        <a href="index.html" class="nav-link active">
-          <i class="fas fa-home"></i>
-          <span>Home</span>
-        </a>
-        <a href="AI.html" class="nav-link">
-          <i class="fas fa-robot"></i>
-          <span>AI Tools</span>
-        </a>
-        <a href="TR.html" class="nav-link">
-          <i class="fas fa-calculator"></i>
-          <span>Taschenrechner</span>
-        </a>
-      </nav>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">Schule 2.0</div>
+    <div class="credit">made by Texi212</div>
+  </div>
 
-      <div class="school-links">
-        <a href="https://www.lernsax.de" target="_blank" class="school-link lernsax-link">
-          <i class="fas fa-graduation-cap"></i>
-          <span>Lernsax</span>
-        </a>
-        <a href="https://www.schullogin.de" target="_blank" class="school-link schullogin-link">
-          <i class="fas fa-sign-in-alt"></i>
-          <span>Schullogin</span>
-        </a>
-        <a href="https://beste.schule/login" target="_blank" class="school-link beste-schule-link">
-          <i class="fas fa-school"></i>
-          <span>Beste Schule</span>
-        </a>
-      </div>
-    </aside>
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </button>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <div class="hero">
-        <h1 class="hero-title">Dein digitales Schultool</h1>
-        <p class="hero-subtitle">
-          Entdecke moderne Lernwerkzeuge für bessere Noten und effizienteres Lernen. 
-          Von KI-Assistenten bis zum smarten Taschenrechner - alles an einem Ort.
-        </p>
-        <div class="cta-buttons">
-          <a href="AI.html" class="cta-button cta-primary">
-            <i class="fas fa-robot"></i>
-            <span>AI Tools entdecken</span>
-          </a>
-          <a href="TR.html" class="cta-button cta-secondary">
-            <i class="fas fa-calculator"></i>
-            <span>Taschenrechner öffnen</span>
-          </a>
-        </div>
-      </div>
-    </main>
+  <!-- Auffälliger Hintergrund -->
+  <div class="bg-pattern"></div>
+  <div class="bg-shapes">
+    <div class="shape" style="width: 600px; height: 600px; background: var(--primary); top: -100px; left: -100px; animation-delay: 0s;"></div>
+    <div class="shape" style="width: 400px; height: 400px; background: var(--accent); bottom: -50px; right: -50px; animation-delay: 5s;"></div>
+    <div class="shape" style="width: 500px; height: 500px; background: var(--secondary); top: 30%; left: 20%; animation-delay: 10s;"></div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="hero-container">
+      <h1 class="hero-title">Schule? Langweilig!</h1>
+    </div>
+  </main>
+
+  <!-- Bottom Left Navigation -->
+  <div class="bottom-nav">
+    <a href="AI.html" class="nav-button">
+      <i class="fas fa-robot"></i>
+      <span>AI Tools</span>
+    </a>
+    <a href="TR.html" class="nav-button">
+      <i class="fas fa-calculator"></i>
+      <span>Taschenrechner</span>
+    </a>
+    <a href="ST.html" class="nav-button">
+      <i class="fas fa-calendar-alt"></i>
+      <span>Stundenplan</span>
+    </a>
+  </div>
+
+  <!-- School Links -->
+  <div class="school-links">
+    <a href="https://www.lernsax.de" target="_blank" class="school-link lernsax-link">
+      <i class="fas fa-graduation-cap"></i>
+      <span>Lernsax</span>
+    </a>
+    <a href="https://www.schullogin.de" target="_blank" class="school-link schullogin-link">
+      <i class="fas fa-sign-in-alt"></i>
+      <span>Schullogin</span>
+    </a>
+    <a href="https://beste.schule/login" target="_blank" class="school-link beste-schule-link">
+      <i class="fas fa-school"></i>
+      <span>Beste Schule</span>
+    </a>
   </div>
 
   <script>
@@ -368,6 +384,28 @@
     html.setAttribute('data-theme', savedTheme);
     const icon = themeToggle.querySelector('i');
     icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+
+    // Create additional background shapes
+    const bgShapes = document.querySelector('.bg-shapes');
+    for (let i = 0; i < 5; i++) {
+      const shape = document.createElement('div');
+      shape.className = 'shape';
+      const size = Math.random() * 400 + 200;
+      const posX = Math.random() * 100;
+      const posY = Math.random() * 100;
+      const delay = Math.random() * 15;
+      const colors = ['var(--primary)', 'var(--secondary)', 'var(--accent)'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      shape.style.width = `${size}px`;
+      shape.style.height = `${size}px`;
+      shape.style.left = `${posX}%`;
+      shape.style.top = `${posY}%`;
+      shape.style.background = color;
+      shape.style.animationDelay = `${delay}s`;
+      
+      bgShapes.appendChild(shape);
+    }
   </script>
 </body>
 </html>

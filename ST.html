@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stundenplan - Schule 2.0</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4895ef;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --info: #560bad;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --text: #212529;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    [data-theme="dark"] {
+      --primary: #4895ef;
+      --secondary: #4361ee;
+      --accent: #3f37c9;
+      --dark: #f8f9fa;
+      --light: #2b2d42;
+      --card-bg: rgba(43, 45, 66, 0.85);
+      --text: #f8f9fa;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--light);
+      color: var(--text);
+      min-height: 100vh;
+      transition: var(--transition);
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
+    }
+
+    .theme-toggle {
+      background: var(--card-bg);
+      border: none;
+      color: var(--text);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(30deg);
+    }
+
+    /* Table Container */
+    .table-container {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 12px 15px;
+      text-align: left;
+      transition: var(--transition);
+    }
+
+    th {
+      background-color: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    /* First column styling */
+    td:first-child, th:first-child {
+      background-color: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    td:first-child.locked {
+      background-color: var(--secondary);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    td {
+      background-color: var(--card-bg);
+    }
+
+    .locked {
+      background-color: rgba(0, 0, 0, 0.05);
+      cursor: not-allowed;
+    }
+
+    /* Password Section */
+    .password-section {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .password-input {
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 2px solid var(--primary);
+      background: var(--card-bg);
+      color: var(--text);
+      flex: 1;
+      max-width: 300px;
+      transition: var(--transition);
+    }
+
+    .password-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+    }
+
+    .unlock-button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .unlock-button:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    /* Status Messages */
+    .status-message {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .success {
+      color: var(--success);
+    }
+
+    .error {
+      color: var(--danger);
+    }
+
+    .save-notice {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--text);
+      opacity: 0.8;
+      text-align: right;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .password-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .password-input {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="index.html" class="back-button">
+      <i class="fas fa-arrow-left"></i>
+      Zurück
+    </a>
+    <button class="theme-toggle" id="themeToggle">
+      <i class="fas fa-moon"></i>
+    </button>
+  </div>
+
+  <div class="table-container">
+    <h1 class="page-title">Stundenplan</h1>
+
+    <table id="editableTable">
+      <thead>
+        <tr>
+          <th>Zeit</th>
+          <th>Montag</th>
+          <th>Dienstag</th>
+          <th>Mittwoch</th>
+          <th>Donnerstag</th>
+          <th>Freitag</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows will be generated by JavaScript -->
+      </tbody>
+    </table>
+
+    <div class="password-section">
+      <input type="password" class="password-input" id="passwordInput" placeholder="Passwort eingeben">
+      <button class="unlock-button" id="unlockButton">
+        <i class="fas fa-lock-open"></i> Entsperren
+      </button>
+    </div>
+    <p class="status-message" id="statusMessage"></p>
+    <div class="save-notice" id="saveNotice"></div>
+  </div>
+
+  <script>
+    // Konstanten
+    const CORRECT_PASSWORD = "Texi212";
+    const STORAGE_KEY = "savedTableData";
+    const TIME_SLOTS = [
+      "07:30 - 08:15",
+      "08:15 - 09:00",
+      "09:15 - 10:00",
+      "10:00 - 10:45",
+      "11:00 - 11:45",
+      "11:45 - 12:30",
+      "12:45 - 13:30",
+      "13:30 - 14:15"
+    ];
+    
+    // DOM-Elemente
+    const tableBody = document.querySelector("#editableTable tbody");
+    const passwordInput = document.getElementById("passwordInput");
+    const unlockButton = document.getElementById("unlockButton");
+    const statusMessage = document.getElementById("statusMessage");
+    const saveNotice = document.getElementById("saveNotice");
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    
+    // Zustandsvariable
+    let isUnlocked = false;
+    let saveTimeout = null;
+
+    // Tabelle initialisieren
+    function initializeTable() {
+      const savedData = localStorage.getItem(STORAGE_KEY);
+      
+      if (savedData) {
+        // Gespeicherte Daten laden
+        const rows = JSON.parse(savedData);
+        createTableFromData(rows);
+        showSaveNotice("Zuletzt gespeicherte Daten wurden geladen");
+      } else {
+        // Neue Tabelle erstellen
+        createNewTable();
+      }
+    }
+
+    // Neue Tabelle erstellen
+    function createNewTable() {
+      tableBody.innerHTML = "";
+      TIME_SLOTS.forEach((time, rowIndex) => {
+        const row = document.createElement("tr");
+        
+        // Zeit-Spalte
+        const timeCell = document.createElement("td");
+        timeCell.textContent = time;
+        timeCell.classList.add("locked");
+        row.appendChild(timeCell);
+        
+        // Wochentage
+        for (let j = 0; j < 5; j++) {
+          const cell = document.createElement("td");
+          cell.textContent = "-";
+          cell.classList.add("locked");
+          row.appendChild(cell);
+        }
+        
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Tabelle aus gespeicherten Daten erstellen
+    function createTableFromData(rows) {
+      tableBody.innerHTML = "";
+      rows.forEach((rowData, rowIndex) => {
+        const row = document.createElement("tr");
+        rowData.forEach((cellData, cellIndex) => {
+          const cell = document.createElement("td");
+          cell.textContent = cellData;
+          cell.classList.add("locked");
+          row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Tabelle speichern
+    function saveTable() {
+      const rows = [];
+      const tableRows = tableBody.querySelectorAll("tr");
+      
+      tableRows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        const rowData = Array.from(cells).map(cell => cell.textContent);
+        rows.push(rowData);
+      });
+      
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+      showSaveNotice("Tabelle wurde gespeichert");
+    }
+
+    // Speicherhinweis anzeigen
+    function showSaveNotice(message) {
+      saveNotice.textContent = message;
+      saveNotice.style.opacity = "1";
+      setTimeout(() => {
+        saveNotice.style.opacity = "0";
+      }, 3000);
+    }
+
+    // Passwortprüfung
+    function checkPassword() {
+      const enteredPassword = passwordInput.value;
+      
+      if (enteredPassword === CORRECT_PASSWORD) {
+        isUnlocked = true;
+        statusMessage.textContent = "Tabelle entsperrt! Sie können jetzt Zellen bearbeiten.";
+        statusMessage.className = "status-message success";
+        
+        // Tabelle bearbeitbar machen
+        const cells = document.querySelectorAll("#editableTable td");
+        cells.forEach(cell => {
+          if (!cell.textContent.includes(":")) { // Zeit-Spalte nicht bearbeitbar
+            cell.classList.remove("locked");
+            cell.contentEditable = true;
+            
+            // Speichern bei Änderungen
+            cell.addEventListener("input", () => {
+              if (saveTimeout) clearTimeout(saveTimeout);
+              saveTimeout = setTimeout(saveTable, 1000);
+            });
+          }
+        });
+        
+        unlockButton.innerHTML = '<i class="fas fa-lock"></i> Sperren';
+      } else {
+        isUnlocked = false;
+        statusMessage.textContent = "Falsches Passwort! Bitte versuchen Sie es erneut.";
+        statusMessage.className = "status-message error";
+      }
+    }
+
+    // Tabelle sperren/entsperren
+    function toggleTableLock() {
+      if (isUnlocked) {
+        // Tabelle sperren
+        isUnlocked = false;
+        statusMessage.textContent = "Tabelle wurde gesperrt. Daten bleiben gespeichert.";
+        statusMessage.className = "status-message";
+        
+        const cells = document.querySelectorAll("#editableTable td");
+        cells.forEach(cell => {
+          cell.classList.add("locked");
+          cell.contentEditable = false;
+          cell.replaceWith(cell.cloneNode(true));
+        });
+        
+        unlockButton.innerHTML = '<i class="fas fa-lock-open"></i> Entsperren';
+        passwordInput.value = "";
+      } else {
+        // Tabelle entsperren
+        checkPassword();
+      }
+    }
+
+    // Theme Toggle
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      
+      // Update icon
+      const icon = themeToggle.querySelector('i');
+      icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      
+      // Save preference
+      localStorage.setItem('theme', newTheme);
+    });
+
+    // Event Listener
+    unlockButton.addEventListener("click", toggleTableLock);
+    passwordInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") checkPassword();
+    });
+
+    // Initialisierung
+    window.addEventListener("DOMContentLoaded", () => {
+      // Check saved theme preference
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      html.setAttribute('data-theme', savedTheme);
+      const icon = themeToggle.querySelector('i');
+      icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      
+      initializeTable();
+    });
+  </script>
+</body>
+</html>

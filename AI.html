@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Schule 2.0</title>
+  <title>AI Tools - Schule 2.0</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
@@ -47,34 +47,42 @@
       transition: var(--transition);
     }
 
-    .container {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      width: 240px;
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      padding: 1.5rem;
-      border-right: 1px solid rgba(0, 0, 0, 0.1);
-      box-shadow: var(--shadow);
-      z-index: 10;
-      transition: var(--transition);
-    }
-
-    .sidebar-header {
+    /* Header */
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      padding: 1.5rem 2rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .logo {
       font-size: 1.5rem;
       font-weight: 700;
       color: var(--primary);
+    }
+
+    .back-button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .back-button:hover {
+      background: var(--secondary);
+      transform: translateX(-3px);
     }
 
     .theme-toggle {
@@ -90,47 +98,15 @@
       transform: rotate(30deg);
     }
 
-    .nav-links {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
-      color: var(--text);
-      text-decoration: none;
-      transition: var(--transition);
-      font-weight: 500;
-    }
-
-    .nav-link:hover, .nav-link.active {
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
-    }
-
-    .nav-link i {
-      font-size: 1.1rem;
-    }
-
     /* Main Content */
     .main-content {
-      flex: 1;
       padding: 2rem;
-      background: var(--light);
-      transition: var(--transition);
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     /* AI Tools Page */
     .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       margin-bottom: 2rem;
     }
 
@@ -138,31 +114,6 @@
       font-size: 2rem;
       font-weight: 700;
       color: var(--primary);
-    }
-
-    .search-bar {
-      position: relative;
-      width: 300px;
-    }
-
-    .search-bar input {
-      width: 100%;
-      padding: 0.75rem 1rem 0.75rem 2.5rem;
-      border-radius: 12px;
-      border: none;
-      background: var(--card-bg);
-      box-shadow: var(--shadow);
-      color: var(--text);
-      transition: var(--transition);
-    }
-
-    .search-bar i {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text);
-      opacity: 0.7;
     }
 
     .tools-grid {
@@ -235,281 +186,129 @@
       transform: translateX(5px);
     }
 
-    /* Calculator Page */
-    .calculator-container {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    .calculator {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 1.5rem;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-    }
-
-    .display {
-      width: 100%;
-      height: 80px;
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      font-size: 2rem;
-      text-align: right;
-      border: none;
-      border-radius: 12px;
-      background: rgba(0, 0, 0, 0.05);
-      color: var(--text);
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .buttons-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.75rem;
-    }
-
-    .calc-btn {
-      padding: 1rem;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      background: var(--card-bg);
-      color: var(--text);
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-    }
-
-    .calc-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .operator {
-      background: var(--accent);
-      color: white;
-    }
-
-    .equal {
-      background: var(--primary);
-      color: white;
-    }
-
-    .clear {
-      background: var(--danger);
-      color: white;
-    }
-
-    .span-2 {
-      grid-column: span 2;
-    }
-
-    /* Home Page */
-    .hero {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: calc(100vh - 4rem);
-      text-align: center;
-    }
-
-    .hero-title {
-      font-size: 4rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-subtitle {
-      font-size: 1.5rem;
-      opacity: 0.8;
-      margin-bottom: 2rem;
-      max-width: 600px;
-    }
-
-    .cta-button {
-      padding: 1rem 2rem;
-      background: var(--primary);
-      color: white;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1.1rem;
-      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
-      transition: var(--transition);
-    }
-
-    .cta-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 16px rgba(67, 97, 238, 0.4);
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
+      .header {
         padding: 1rem;
       }
 
-      .nav-links {
-        flex-direction: row;
-        overflow-x: auto;
-        padding-bottom: 0.5rem;
-      }
-
-      .nav-link {
-        white-space: nowrap;
-      }
-
-      .hero-title {
-        font-size: 2.5rem;
-      }
-
-      .hero-subtitle {
-        font-size: 1.2rem;
+      .tools-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">Schule 2.0</div>
-        <button class="theme-toggle" id="themeToggle">
-          <i class="fas fa-moon"></i>
-        </button>
-      </div>
-      <nav class="nav-links">
-        <a href="index.html" class="nav-link">
-          <i class="fas fa-home"></i>
-          <span>Home</span>
-        </a>
-        <a href="AI.html" class="nav-link active">
-          <i class="fas fa-robot"></i>
-          <span>AI Tools</span>
-        </a>
-        <a href="TR.html" class="nav-link">
-          <i class="fas fa-calculator"></i>
-          <span>Taschenrechner</span>
-        </a>
-      </nav>
-    </aside>
+  <!-- Header with Back Button -->
+  <header class="header">
+    <a href="index.html" class="back-button">
+      <i class="fas fa-arrow-left"></i>
+      <span>Zurück</span>
+    </a>
+    <div class="logo">AI Tools</div>
+    <button class="theme-toggle" id="themeToggle">
+      <i class="fas fa-moon"></i>
+    </button>
+  </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- AI Tools Page Content -->
-      <div class="page-header">
-        <h1 class="page-title">AI Tools für die Schule</h1>
-        <div class="search-bar">
-          <i class="fas fa-search"></i>
-          <input type="text" placeholder="Tools durchsuchen...">
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">AI Tools für die Schule</h1>
+    </div>
+
+    <div class="tools-grid">
+      <!-- Tool Card 1 -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fab fa-openai"></i>
+          </div>
+          <h3 class="tool-title">ChatGPT</h3>
         </div>
+        <p class="tool-description">Texte schreiben, Erklärungen liefern, Code erzeugen für alle Schulfächer.</p>
+        <a href="https://chat.openai.com" target="_blank" class="tool-link">
+          <span>Zum Tool</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
       </div>
 
-      <div class="tools-grid">
-        <!-- Tool Card 1 -->
-        <div class="tool-card">
-          <div class="tool-header">
-            <div class="tool-icon">
-              <i class="fab fa-openai"></i>
-            </div>
-            <h3 class="tool-title">ChatGPT</h3>
+      <!-- Tool Card 2 -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-paint-brush"></i>
           </div>
-          <p class="tool-description">Texte schreiben, Erklärungen liefern, Code erzeugen für alle Schulfächer.</p>
-          <a href="https://chat.openai.com" target="_blank" class="tool-link">
-            <span>Zum Tool</span>
-            <i class="fas fa-arrow-right"></i>
-          </a>
+          <h3 class="tool-title">DALL·E</h3>
         </div>
-
-        <!-- Tool Card 2 -->
-        <div class="tool-card">
-          <div class="tool-header">
-            <div class="tool-icon">
-              <i class="fas fa-paint-brush"></i>
-            </div>
-            <h3 class="tool-title">DALL·E</h3>
-          </div>
-          <p class="tool-description">Bilder zu Textbeschreibungen generieren (z.B. für Biologie, Geschichte oder Kunst).</p>
-          <a href="https://openai.com/dall-e" target="_blank" class="tool-link">
-            <span>Zum Tool</span>
-            <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
-
-        <!-- Tool Card 3 -->
-        <div class="tool-card">
-          <div class="tool-header">
-            <div class="tool-icon">
-              <i class="fas fa-book"></i>
-            </div>
-            <h3 class="tool-title">Notion AI</h3>
-          </div>
-          <p class="tool-description">Zusammenfassungen erstellen, Ideensammlungen und Lernpläne organisieren.</p>
-          <a href="https://www.notion.so/product/ai" target="_blank" class="tool-link">
-            <span>Zum Tool</span>
-            <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
-
-        <!-- Tool Card 4 -->
-        <div class="tool-card">
-          <div class="tool-header">
-            <div class="tool-icon">
-              <i class="fas fa-search"></i>
-            </div>
-            <h3 class="tool-title">Perplexity.ai</h3>
-          </div>
-          <p class="tool-description">Recherchen mit Quellenangaben und schulfreundlichem Ton durchführen.</p>
-          <a href="https://www.perplexity.ai" target="_blank" class="tool-link">
-            <span>Zum Tool</span>
-            <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
-
-        <!-- Tool Card 5 -->
-        <div class="tool-card">
-          <div class="tool-header">
-            <div class="tool-icon">
-              <i class="fas fa-brain"></i>
-            </div>
-            <h3 class="tool-title">DeepSeek</h3>
-          </div>
-          <p class="tool-description">KI-Chat mit Fokustools für Mathe, Schreiben und Programmieren.</p>
-          <a href="https://chat.deepseek.com" target="_blank" class="tool-link">
-            <span>Zum Tool</span>
-            <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
-
-        <!-- Tool Card 6 -->
-        <div class="tool-card">
-          <div class="tool-header">
-            <div class="tool-icon">
-              <i class="fas fa-palette"></i>
-            </div>
-            <h3 class="tool-title">Canva</h3>
-          </div>
-          <p class="tool-description">Präsentationen, Plakate und Arbeitsblätter professionell gestalten.</p>
-          <a href="https://www.canva.com" target="_blank" class="tool-link">
-            <span>Zum Tool</span>
-            <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
+        <p class="tool-description">Bilder zu Textbeschreibungen generieren (z.B. für Biologie, Geschichte oder Kunst).</p>
+        <a href="https://openai.com/dall-e" target="_blank" class="tool-link">
+          <span>Zum Tool</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
       </div>
-    </main>
-  </div>
+
+      <!-- Tool Card 3 -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-book"></i>
+          </div>
+          <h3 class="tool-title">Notion AI</h3>
+        </div>
+        <p class="tool-description">Zusammenfassungen erstellen, Ideensammlungen und Lernpläne organisieren.</p>
+        <a href="https://www.notion.so/product/ai" target="_blank" class="tool-link">
+          <span>Zum Tool</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Tool Card 4 -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-search"></i>
+          </div>
+          <h3 class="tool-title">Perplexity.ai</h3>
+        </div>
+        <p class="tool-description">Recherchen mit Quellenangaben und schulfreundlichem Ton durchführen.</p>
+        <a href="https://www.perplexity.ai" target="_blank" class="tool-link">
+          <span>Zum Tool</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Tool Card 5 -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-brain"></i>
+          </div>
+          <h3 class="tool-title">DeepSeek</h3>
+        </div>
+        <p class="tool-description">KI-Chat mit Fokustools für Mathe, Schreiben und Programmieren.</p>
+        <a href="https://chat.deepseek.com" target="_blank" class="tool-link">
+          <span>Zum Tool</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Tool Card 6 -->
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">
+            <i class="fas fa-palette"></i>
+          </div>
+          <h3 class="tool-title">Canva</h3>
+        </div>
+        <p class="tool-description">Präsentationen, Plakate und Arbeitsblätter professionell gestalten.</p>
+        <a href="https://www.canva.com" target="_blank" class="tool-link">
+          <span>Zum Tool</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </main>
 
   <script>
     // Theme Toggle
@@ -534,23 +333,6 @@
     html.setAttribute('data-theme', savedTheme);
     const icon = themeToggle.querySelector('i');
     icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-
-    // Calculator functions
-    function appendValue(value) {
-      document.getElementById("display").value += value;
-    }
-
-    function clearDisplay() {
-      document.getElementById("display").value = '';
-    }
-
-    function calculate() {
-      try {
-        document.getElementById("display").value = eval(document.getElementById("display").value);
-      } catch {
-        document.getElementById("display").value = 'Fehler';
-      }
-    }
   </script>
 </body>
 </html>

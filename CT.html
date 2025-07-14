@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schule 2.0 - Chat</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4895ef;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --lernsax: #00a651;
+      --schullogin: #3a7bd5;
+      --beste-schule: #6a1b9a;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --text: #212529;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --error: #e63946;
+      --success: #2a9d8f;
+    }
+
+    [data-theme="dark"] {
+      --primary: #4895ef;
+      --secondary: #4361ee;
+      --accent: #3f37c9;
+      --dark: #f8f9fa;
+      --light: #2b2d42;
+      --card-bg: rgba(43, 45, 66, 0.85);
+      --text: #f8f9fa;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      --error: #ff758f;
+      --success: #80ffdb;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--light);
+      color: var(--text);
+      min-height: 100vh;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      line-height: 1;
+    }
+
+    .credit {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      color: var(--text);
+      font-weight: 500;
+      margin-top: 0.25rem;
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      background: var(--card-bg);
+      border: none;
+      color: var(--text);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(30deg);
+    }
+
+    /* Auth Forms */
+    .auth-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .auth-box {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 400px;
+      transition: var(--transition);
+    }
+
+    .auth-title {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      text-align: center;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+    }
+
+    .form-input {
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 2px solid rgba(0,0,0,0.1);
+      background: rgba(255,255,255,0.1);
+      color: var(--text);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .auth-button {
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 0.5rem;
+    }
+
+    .auth-button:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    .auth-toggle {
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 1rem;
+      text-align: center;
+      width: 100%;
+    }
+
+    .auth-toggle:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: var(--error);
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+
+    /* Chat Container */
+    .chat-container {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+      padding: 80px 20px 100px;
+      position: relative;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .chat-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .username {
+      font-weight: 600;
+    }
+
+    .logout-btn {
+      background: none;
+      border: none;
+      color: var(--error);
+      cursor: pointer;
+    }
+
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+      padding: 0.75rem 1rem;
+      border-radius: 15px;
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .message.sent {
+      align-self: flex-end;
+      background: var(--primary);
+      color: white;
+    }
+
+    .message.received {
+      align-self: flex-start;
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+      font-size: 0.8rem;
+    }
+
+    .message-sender {
+      font-weight: 600;
+    }
+
+    .message-time {
+      opacity: 0.7;
+    }
+
+    .message-content {
+      word-wrap: break-word;
+    }
+
+    .message-file {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(0,0,0,0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .message-file i {
+      font-size: 1.2rem;
+    }
+
+    .admin-controls {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .admin-btn {
+      background: none;
+      border: none;
+      color: var(--error);
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .input-container {
+      display: flex;
+      gap: 0.5rem;
+      padding: 1rem 0;
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: var(--light);
+      z-index: 50;
+    }
+
+    .message-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 15px;
+      border: 2px solid rgba(0,0,0,0.1);
+      background: var(--card-bg);
+      color: var(--text);
+      resize: none;
+      min-height: 50px;
+      max-height: 150px;
+    }
+
+    .message-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .file-btn, .send-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .file-btn:hover, .send-btn:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    /* Auffälliger Hintergrund */
+    .bg-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(67, 97, 238, 0.08) 0%, transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(72, 149, 239, 0.08) 0%, transparent 30%),
+        linear-gradient(135deg, rgba(67, 97, 238, 0.05) 0%, rgba(63, 55, 201, 0.05) 100%);
+      background-color: var(--light);
+    }
+
+    .bg-shapes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.2;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0);
+      }
+      25% {
+        transform: translate(10%, 15%);
+      }
+      50% {
+        transform: translate(-5%, 20%);
+      }
+      75% {
+        transform: translate(15%, -10%);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .auth-box {
+        padding: 1.5rem;
+        margin: 0 1rem;
+      }
+      
+      .auth-title {
+        font-size: 1.5rem;
+      }
+
+      .header {
+        top: 15px;
+        left: 15px;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+      }
+
+      .credit {
+        font-size: 0.8rem;
+      }
+
+      .chat-container {
+        padding: 70px 15px 90px;
+      }
+
+      .message {
+        max-width: 90%;
+      }
+
+      .input-container {
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">Schule 2.0</div>
+    <div class="credit">made by Texi212</div>
+  </div>
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i>
+  </button>
+
+  <!-- Auffälliger Hintergrund -->
+  <div class="bg-pattern"></div>
+  <div class="bg-shapes">
+    <div class="shape" style="width: 600px; height: 600px; background: var(--primary); top: -100px; left: -100px; animation-delay: 0s;"></div>
+    <div class="shape" style="width: 400px; height: 400px; background: var(--accent); bottom: -50px; right: -50px; animation-delay: 5s;"></div>
+    <div class="shape" style="width: 500px; height: 500px; background: var(--secondary); top: 30%; left: 20%; animation-delay: 10s;"></div>
+  </div>
+
+  <!-- Auth Forms -->
+  <div class="auth-container" id="authContainer">
+    <div class="auth-box">
+      <h2 class="auth-title" id="authTitle">Anmelden</h2>
+      <form class="auth-form" id="loginForm">
+        <div class="form-group">
+          <label for="loginUsername" class="form-label">Nutzername</label>
+          <input type="text" id="loginUsername" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword" class="form-label">Passwort</label>
+          <input type="password" id="loginPassword" class="form-input" required>
+        </div>
+        <button type="submit" class="auth-button">Anmelden</button>
+        <p class="error-message" id="loginError"></p>
+      </form>
+      
+      <form class="auth-form" id="registerForm" style="display: none;">
+        <div class="form-group">
+          <label for="registerUsername" class="form-label">Nutzername</label>
+          <input type="text" id="registerUsername" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="registerPassword" class="form-label">Passwort</label>
+          <input type="password" id="registerPassword" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="registerConfirmPassword" class="form-label">Passwort bestätigen</label>
+          <input type="password" id="registerConfirmPassword" class="form-input" required>
+        </div>
+        <button type="submit" class="auth-button">Registrieren</button>
+        <p class="error-message" id="registerError"></p>
+      </form>
+      
+      <button class="auth-toggle" id="authToggle">Noch keinen Account? Registrieren</button>
+    </div>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="chat-container" id="chatContainer">
+    <div class="chat-header">
+      <h2 class="chat-title">Schule 2.0 Chat</h2>
+      <div class="user-info">
+        <span class="username" id="currentUsername"></span>
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="messages-container" id="messagesContainer">
+      <!-- Messages will be loaded here -->
+    </div>
+    
+    <div class="input-container">
+      <input type="file" id="fileInput" class="file-input" multiple>
+      <button class="file-btn" id="fileBtn">
+        <i class="fas fa-paperclip"></i>
+      </button>
+      <textarea class="message-input" id="messageInput" placeholder="Nachricht schreiben..."></textarea>
+      <button class="send-btn" id="sendBtn">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      
+      // Update icon
+      const icon = themeToggle.querySelector('i');
+      icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      
+      // Save preference
+      localStorage.setItem('theme', newTheme);
+    });
+
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    const icon = themeToggle.querySelector('i');
+    icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+
+    // Create additional background shapes
+    const bgShapes = document.querySelector('.bg-shapes');
+    for (let i = 0; i < 5; i++) {
+      const shape = document.createElement('div');
+      shape.className = 'shape';
+      const size = Math.random() * 400 + 200;
+      const posX = Math.random() * 100;
+      const posY = Math.random() * 100;
+      const delay = Math.random() * 15;
+      const colors = ['var(--primary)', 'var(--secondary)', 'var(--accent)'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      shape.style.width = `${size}px`;
+      shape.style.height = `${size}px`;
+      shape.style.left = `${posX}%`;
+      shape.style.top = `${posY}%`;
+      shape.style.background = color;
+      shape.style.animationDelay = `${delay}s`;
+      
+      bgShapes.appendChild(shape);
+    }
+
+    // Chat Application
+    const authContainer = document.getElementById('authContainer');
+    const chatContainer = document.getElementById('chatContainer');
+    const authTitle = document.getElementById('authTitle');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const authToggle = document.getElementById('authToggle');
+    const loginError = document.getElementById('loginError');
+    const registerError = document.getElementById('registerError');
+    const currentUsername = document.getElementById('currentUsername');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const messagesContainer = document.getElementById('messagesContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const fileBtn = document.getElementById('fileBtn');
+    const fileInput = document.getElementById('fileInput');
+
+    // Sample database (in a real app, use a backend)
+    let users = JSON.parse(localStorage.getItem('chatUsers')) || [];
+    let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+    let currentUser = null;
+    const ADMIN_USERNAME = 'Texi212';
+    const ADMIN_PASSWORD = 'titus_2012';
+
+    // Check if admin exists, if not create one
+    if (!users.some(user => user.username === ADMIN_USERNAME)) {
+      users.push({
+        username: ADMIN_USERNAME,
+        password: ADMIN_PASSWORD,
+        isAdmin: true
+      });
+      localStorage.setItem('chatUsers', JSON.stringify(users));
+    }
+
+    // Toggle between login and register forms
+    authToggle.addEventListener('click', () => {
+      const isLogin = loginForm.style.display !== 'none';
+      loginForm.style.display = isLogin ? 'none' : 'block';
+      registerForm.style.display = isLogin ? 'block' : 'none';
+      authTitle.textContent = isLogin ? 'Registrieren' : 'Anmelden';
+      authToggle.textContent = isLogin ? 'Bereits registriert? Anmelden' : 'Noch keinen Account? Registrieren';
+      loginError.textContent = '';
+      registerError.textContent = '';
+    });
+
+    // Login
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      // Check admin credentials first
+      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        currentUser = {
+          username: ADMIN_USERNAME,
+          isAdmin: true
+        };
+        startChat();
+        return;
+      }
+      
+      const user = users.find(u => u.username === username && u.password === password);
+      
+      if (user) {
+        currentUser = {
+          username: user.username,
+          isAdmin: user.isAdmin || false
+        };
+        startChat();
+      } else {
+        loginError.textContent = 'Falscher Nutzername oder Passwort';
+      }
+    });
+
+    // Register
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('registerUsername').value;
+      const password = document.getElementById('registerPassword').value;
+      const confirmPassword = document.getElementById('registerConfirmPassword').value;
+      
+      if (password !== confirmPassword) {
+        registerError.textContent = 'Passwörter stimmen nicht überein';
+        return;
+      }
+      
+      if (users.some(u => u.username === username)) {
+        registerError.textContent = 'Nutzername bereits vergeben';
+        return;
+      }
+      
+      users.push({
+        username,
+        password,
+        isAdmin: false
+      });
+      
+      localStorage.setItem('chatUsers', JSON.stringify(users));
+      
+      currentUser = {
+        username,
+        isAdmin: false
+      };
+      
+      startChat();
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      currentUser = null;
+      chatContainer.style.display = 'none';
+      authContainer.style.display = 'flex';
+      messagesContainer.innerHTML = '';
+      messageInput.value = '';
+    });
+
+    // Send message
+    function sendMessage() {
+      const text = messageInput.value.trim();
+      const files = fileInput.files;
+      
+      if (!text && files.length === 0) return;
+      
+      const newMessage = {
+        id: Date.now(),
+        sender: currentUser.username,
+        text: text || null,
+        files: [],
+        timestamp: new Date().toISOString(),
+        isAdmin: currentUser.isAdmin
+      };
+      
+      // Handle file uploads (in a real app, upload to server)
+      if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const fileType = file.type.split('/')[0]; // 'image', 'video', etc.
+          
+          newMessage.files.push({
+            name: file.name,
+            type: fileType,
+            size: file.size,
+            url: URL.createObjectURL(file) // In a real app, use server URL
+          });
+        }
+      }
+      
+      messages.push(newMessage);
+      localStorage.setItem('chatMessages', JSON.stringify(messages));
+      
+      // Cleanup
+      messageInput.value = '';
+      fileInput.value = '';
+      
+      // Display message
+      displayMessage(newMessage);
+      
+      // Auto-scroll to bottom
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Display message
+    function displayMessage(message) {
+      const messageEl = document.createElement('div');
+      messageEl.className = `message ${message.sender === currentUser.username ? 'sent' : 'received'}`;
+      
+      const isCurrentUser = message.sender === currentUser.username;
+      
+      let adminControls = '';
+      if (currentUser.isAdmin && !isCurrentUser) {
+        adminControls = `
+          <div class="admin-controls">
+            <button class="admin-btn delete-btn" data-id="${message.id}">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button class="admin-btn ban-btn" data-username="${message.sender}">
+              <i class="fas fa-user-slash"></i>
+            </button>
+          </div>
+        `;
+      }
+      
+      let filesHtml = '';
+      if (message.files && message.files.length > 0) {
+        filesHtml = message.files.map(file => {
+          let icon;
+          if (file.type === 'image') icon = 'fa-image';
+          else if (file.type === 'video') icon = 'fa-video';
+          else if (file.type === 'audio') icon = 'fa-music';
+          else icon = 'fa-file';
+          
+          return `
+            <a href="${file.url}" target="_blank" class="message-file">
+              <i class="fas ${icon}"></i>
+              <span>${file.name} (${formatFileSize(file.size)})</span>
+            </a>
+          `;
+        }).join('');
+      }
+      
+      messageEl.innerHTML = `
+        ${adminControls}
+        <div class="message-header">
+          <span class="message-sender">${message.sender}${message.isAdmin ? ' (Admin)' : ''}</span>
+          <span class="message-time">${formatTime(message.timestamp)}</span>
+        </div>
+        ${message.text ? `<div class="message-content">${message.text}</div>` : ''}
+        ${filesHtml}
+      `;
+      
+      messagesContainer.appendChild(messageEl);
+      
+      // Add event listeners for admin buttons
+      if (currentUser.isAdmin && !isCurrentUser) {
+        const deleteBtn = messageEl.querySelector('.delete-btn');
+        const banBtn = messageEl.querySelector('.ban-btn');
+        
+        if (deleteBtn) {
+          deleteBtn.addEventListener('click', () => deleteMessage(message.id));
+        }
+        
+        if (banBtn) {
+          banBtn.addEventListener('click', () => banUser(message.sender));
+        }
+      }
+    }
+
+    // Delete message (admin only)
+    function deleteMessage(messageId) {
+      messages = messages.filter(msg => msg.id !== messageId);
+      localStorage.setItem('chatMessages', JSON.stringify(messages));
+      
+      // Refresh messages display
+      messagesContainer.innerHTML = '';
+      loadMessages();
+    }
+
+    // Ban user (admin only)
+    function banUser(username) {
+      if (confirm(`${username} wirklich sperren?`)) {
+        users = users.filter(user => user.username !== username);
+        localStorage.setItem('chatUsers', JSON.stringify(users));
+        
+        // Also remove their messages
+        messages = messages.filter(msg => msg.sender !== username);
+        localStorage.setItem('chatMessages', JSON.stringify(messages));
+        
+        // Refresh messages display
+        messagesContainer.innerHTML = '';
+        loadMessages();
+      }
+    }
+
+    // Load messages
+    function loadMessages() {
+      // Filter messages older than 4 months (120 days)
+      const fourMonthsAgo = new Date();
+      fourMonthsAgo.setDate(fourMonthsAgo.getDate() - 120);
+      
+      messages = messages.filter(msg => {
+        const msgDate = new Date(msg.timestamp);
+        return msgDate > fourMonthsAgo;
+      });
+      
+      localStorage.setItem('chatMessages', JSON.stringify(messages));
+      
+      messages.forEach(msg => displayMessage(msg));
+      
+      // Auto-scroll to bottom
+      setTimeout(() => {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 100);
+    }
+
+    // Start chat session
+    function startChat() {
+      authContainer.style.display = 'none';
+      chatContainer.style.display = 'flex';
+      currentUsername.textContent = currentUser.username;
+      loadMessages();
+    }
+
+    // Format time
+    function formatTime(timestamp) {
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Format file size
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    fileBtn.addEventListener('click', () => fileInput.click());
+
+    // Check if user is already logged in
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      currentUser = JSON.parse(savedUser);
+      startChat();
+    }
+  </script>
+</body>
+</html>
